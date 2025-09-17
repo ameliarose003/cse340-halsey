@@ -1,12 +1,13 @@
 {
   "name": "cse340-halsey",
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^5.1.0"
   },
   "type": "module",
   "scripts": {
-     "dev": "nodemon --env-file=.env server.js",
-      "start": "node server.js"
+    "dev": "nodemon --env-file=.env server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
