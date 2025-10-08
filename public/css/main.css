@@ -8,30 +8,72 @@ body {
     &.blue-theme {background-color: #e3f2fd;}
     &.green-theme {background-color: #e8f5e8;}
     &.red-theme {background-color: #ffebee;}
-    nav {
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            display: inline;
-            margin-right: 15px;
-        }
-        a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
 
-            &:hover {
-                color: #0066cc;
-            }
+}
+
+header {
+    border-bottom: rgb(202, 200, 200) solid 1px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .greeting-container {
+        justify-content: flex-end;
+    }
+    p {
+        text-align: right;
+    }
+
+}
+nav {
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        display: inline;
+        margin-right: 15px;
+    }
+    a {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+
+        &:hover {
+            color: #0066cc;
         }
     }
-    main {
-        img {
-            width: 500px;
-            border-radius: 8px;
-        }
+}
 
+
+
+main {
+    h1 {
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 40px;
     }
+    img {
+        width: 500px;
+        border-radius: 8px;
+    }
+
+}
+
+.introduction {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-items: center;
+    align-self: center;
+    
+    .intro-paragraph {
+        padding: 118px;
+        line-height: 2;
+    }
+
+}
+
+footer {
+    margin-top: 30px;
 }
