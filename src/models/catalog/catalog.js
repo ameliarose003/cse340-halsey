@@ -105,6 +105,11 @@ const getCourseById = (courseId) => {
 };
 
 const getSortedSections = (sections, sortBy) => {
+    // ...sections is getting a copy of the sections. 
+    // It copies it instead of making an alias. 
+    // It makes it safe so we don;t alter the original date. 
+    // It is the same as going through each section
+    //  and copying the code for secure manipulation.
     const sortedSections = [...sections];
 
     switch (sortBy) {

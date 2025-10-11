@@ -1,0 +1,25 @@
+<!-- Faculty Detail Template (src/views/faculty/detail.ejs):
+
+Display detailed information about the faculty member
+Include name, office, phone, email, department, and title
+Provide a link back to the faculty list
+Follow the same styling patterns as your course detail pages -->
+
+<%- include('../partials/header') %>
+<main>
+    <h1 class="detail-title"><%= title %></h1>
+    <p class="faculty-description">Meet <%= faculty.name%> our wonderful <%= faculty.title %></p>
+    <div class="detail-faculty-card">
+        <h3><%= faculty.name %></h3>
+        <div class="detail-p">
+            <p><strong>Department: </strong><%= faculty.department %></p>
+            <p><strong>Phone: </strong><%= faculty.phone %></p>
+            <p><strong>Email: </strong><%= faculty.email %></p>
+            <p><strong>Office: </strong><%= faculty.office %></p>
+        </div>
+    </div>
+    <div class="navigation">
+        <p><a href="/faculty">&larr; Back to Faculty List</a></p>
+    </div>
+</main>
+<%- include('../partials/footer') %>

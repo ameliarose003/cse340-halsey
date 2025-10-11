@@ -1,4 +1,9 @@
 /* Course catalog styles using native CSS nesting */
+
+.catalog-info {
+    text-align: center;
+}
+
 .course-list {
     display: grid;
     gap: 1.5rem;
