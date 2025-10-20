@@ -1,5 +1,8 @@
 // Route handlers for static pages
 const homePage = (req, res) => {
+    // res.addStyle('<link rel="stylesheet" href="/css/main.css">', 10);
+    // res.addScript('<script src="/js/server.js"></script>', 5);
+    // return only one res
     res.render('home', { title: 'Home' });
 };
 
@@ -8,7 +11,7 @@ const aboutPage = (req, res) => {
 };
 
 const demoPage = (req, res) => {
-    res.render('middleware-demo', { title: 'Middleware Demo Page' });
+    res.render('demo', { title: 'Middleware Demo Page' });
 };
 
 const testErrorPage = (req, res, next) => {

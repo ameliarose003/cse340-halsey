@@ -1,8 +1,11 @@
-// Create src/controllers/faculty/faculty.js with route handlers for faculty list and detail pages. Follow the same pattern you used for the course controllers:
-
-
-// Import the faculty model functions
 import { getFacultyBySlug, getSortedFaculty } from '../../models/faculty/faculty.js';
+
+/**
+ * Helper function to add styles specific to the faculty pages only
+ */
+const addFacultySpecificStyles = (res) => {
+    res.addStyle('<link rel="stylesheet" href="/css/faculty.css">');
+};
 
 const facultyListPage = async (req, res) => {
     // Default to sorting by name if no valid sort option is provided
@@ -12,11 +15,14 @@ const facultyListPage = async (req, res) => {
     // Fetch sorted faculty list
     const facultyList = await getSortedFaculty(sortBy);
 
+    addFacultySpecificStyles(res);
+
     res.render('faculty/list', { 
         title: 'Faculty Directory',
         currentSort: sortBy,
         facultyList
     });
+
 };
 
 const facultyDetailPage = async (req, res, next) => {
@@ -30,10 +36,15 @@ const facultyDetailPage = async (req, res, next) => {
         return next(err);
     }
 
+    addFacultySpecificStyles(res);
+
     res.render('faculty/detail', { 
         title: facultyMember.name,
         facultyMember
     });
+
 };
+
+
 // Export both functions
 export { facultyDetailPage, facultyListPage };

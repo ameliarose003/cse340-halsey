@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <%- renderStyles() %>
     <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/catalog.css">
-    <link rel="stylesheet" href="/css/faculty.css">
     <% if (NODE_ENV.includes('dev')) { %>
         <script>
             const host = window.location.hostname;
@@ -22,6 +21,7 @@
     <% } %>
 </head>
 <body class="<%= bodyClass %>">
+    <%- renderScripts() %>
     <header>
         <nav>
             <ul>
@@ -29,7 +29,7 @@
                 <li><a href="/about">About</a></li>
                 <li><a href="/catalog">Course Catalog</a></li>
                 <li><a href="/faculty">Faculty Directory</a></li>
-                <li><a href="/middleware-demo">Middleware Demo</a></li>
+                <li><a href="/demo">Middleware Demo</a></li>
                 <li><a href="/nonexistant">404</a></li>
             </ul>
         </nav>
