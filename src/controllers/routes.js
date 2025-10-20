@@ -22,7 +22,7 @@ router.get('/faculty', facultyListPage);
 router.get('/faculty/:facultyId', facultyDetailPage);
 
 // Demo page with special middleware
-router.get('/middleware-demo', addDemoHeaders, demoPage);
+router.get('/demo', addDemoHeaders, demoPage);
 
 // Route to trigger a test error
 router.get('/test-error', testErrorPage);

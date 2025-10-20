@@ -1,139 +1,251 @@
-// Enhanced course data object
-const courses = {
-    'CS121': {
-        id: 'CS121',
-        title: 'Introduction to Programming',
-        department: 'Computer Science',
-        description: 'Learn programming fundamentals using JavaScript and basic web development concepts.',
-        credits: 3,
-        sections: [
-            { time: '9:00 AM', room: 'STC 392', professor: 'Brother Jack' },
-            { time: '2:00 PM', room: 'STC 394', professor: 'Sister Enkey' },
-            { time: '11:00 AM', room: 'STC 390', professor: 'Brother Keers' }
-        ]
-    },
-    'CS162': {
-        id: 'CS162',
-        title: 'Introduction to Computer Science',
-        department: 'Computer Science', 
-        description: 'Object-oriented programming concepts and software development practices.',
-        credits: 3,
-        sections: [
-            { time: '10:00 AM', room: 'STC 392', professor: 'Brother Miller' },
-            { time: '1:00 PM', room: 'STC 394', professor: 'Brother Jack' },
-            { time: '3:00 PM', room: 'STC 390', professor: 'Sister Anderson' }
-        ]
-    },
-    'CS235': {
-        id: 'CS235',
-        title: 'Data Structures and Algorithms',
-        department: 'Computer Science',
-        description: 'Advanced programming concepts including data structures, algorithms, and complexity analysis.',
-        credits: 3,
-        sections: [
-            { time: '8:00 AM', room: 'STC 392', professor: 'Brother Keers' },
-            { time: '12:00 PM', room: 'STC 394', professor: 'Brother Miller' }
-        ]
-    },
-    'MATH110': {
-        id: 'MATH110',
-        title: 'College Algebra',
-        department: 'Mathematics',
-        description: 'Fundamental algebraic concepts including functions, graphing, and problem solving.',
-        credits: 4,
-        sections: [
-            { time: '8:00 AM', room: 'MC 301', professor: 'Sister Anderson' },
-            { time: '1:00 PM', room: 'MC 305', professor: 'Brother Miller' },
-            { time: '3:00 PM', room: 'MC 307', professor: 'Brother Thompson' }
-        ]
-    },
-    'MATH111': {
-        id: 'MATH111',
-        title: 'Trigonometry',
-        department: 'Mathematics',
-        description: 'Trigonometric functions, identities, and applications to real-world problems.',
-        credits: 3,
-        sections: [
-            { time: '9:00 AM', room: 'MC 301', professor: 'Brother Thompson' },
-            { time: '2:00 PM', room: 'MC 305', professor: 'Sister Anderson' }
-        ]
-    },
-    'ENG101': {
-        id: 'ENG101',
-        title: 'Academic Writing',
-        department: 'English',
-        description: 'Develop writing skills for academic and professional communication.',
-        credits: 3,
-        sections: [
-            { time: '10:00 AM', room: 'GEB 201', professor: 'Sister Anderson' },
-            { time: '12:00 PM', room: 'GEB 205', professor: 'Brother Davis' },
-            { time: '4:00 PM', room: 'GEB 203', professor: 'Sister Enkey' }
-        ]
-    },
-    'ENG102': {
-        id: 'ENG102', 
-        title: 'Composition and Literature',
-        department: 'English',
-        description: 'Advanced writing skills through the study of literature and critical analysis.',
-        credits: 3,
-        sections: [
-            { time: '11:00 AM', room: 'GEB 201', professor: 'Brother Davis' },
-            { time: '1:00 PM', room: 'GEB 205', professor: 'Sister Enkey' }
-        ]
-    },
-    'HIST105': {
-        id: 'HIST105',
-        title: 'World History',
-        department: 'History',
-        description: 'Survey of world civilizations from ancient times to the present.',
-        credits: 3,
-        sections: [
-            { time: '9:00 AM', room: 'GEB 301', professor: 'Brother Wilson' },
-            { time: '2:00 PM', room: 'GEB 305', professor: 'Sister Roberts' }
-        ]
-    }
+import db from '../db.js';
+
+/**
+ * Simple time sorting helper - extracts start time from time strings
+ * @param {string} timeString - Time string like "Mon Wed Fri 8:00-8:50" or "Tue Thu 10:00-11:15"
+ * @returns {number} - Hour in 24-hour format for sorting (8 for 8:00, 20 for 8:00 PM)
+ */
+const extractStartHour = (timeString) => {
+    const timeMatch = timeString.match(/(\d{1,2}):(\d{2})/);
+    if (!timeMatch) return 0;
+    
+    let hour = parseInt(timeMatch[1]);
+    // Simple assumption: times before 7 AM are likely PM (like 1:00 = 1:00 PM = 13)
+    if (hour < 7) hour += 12;
+    
+    return hour;
 };
 
-// Model functions that handle all data access
-
-const getAllCourses = () => {
-    return courses;
-};
-
-const getCourseById = (courseId) => {
-    return courses[courseId] || null;
-};
-
-const getSortedSections = (sections, sortBy) => {
-    // ...sections is getting a copy of the sections. 
-    // It copies it instead of making an alias. 
-    // It makes it safe so we don;t alter the original date. 
-    // It is the same as going through each section
-    //  and copying the code for secure manipulation.
-    const sortedSections = [...sections];
-
-    switch (sortBy) {
-        case 'professor':
-            return sortedSections.sort((a, b) => a.professor.localeCompare(b.professor));
-        case 'room':
-            return sortedSections.sort((a, b) => a.room.localeCompare(b.room));
-        case 'time':
-        default:
-            return sortedSections; // Keep original order
-    }
-};
-
-const getCoursesByDepartment = () => {
-    const departments = {};
-
-    Object.values(courses).forEach(course => {
-        if (!departments[course.department]) {
-            departments[course.department] = [];
+/**
+ * Get all sections/offerings for a specific course by course ID
+ */
+const getSectionsByCourseId = async (courseId, sortBy = 'time') => {
+    try {
+        const query = `
+            SELECT cat.id, cat.time, cat.room, 
+                   c.course_code, c.name as course_name, c.description, c.credit_hours,
+                   f.first_name, f.last_name, f.slug as faculty_slug, f.title as faculty_title,
+                   d.name as department_name, d.code as department_code
+            FROM catalog cat
+            JOIN courses c ON cat.course_slug = c.slug
+            JOIN faculty f ON cat.faculty_slug = f.slug
+            JOIN departments d ON c.department_id = d.id
+            WHERE c.id = $1
+        `;
+        
+        const result = await db.query(query, [courseId]);
+        
+        let sections = result.rows.map(section => ({
+            id: section.id,
+            time: section.time,
+            room: section.room,
+            courseCode: section.course_code,
+            courseName: section.course_name,
+            description: section.description,
+            creditHours: section.credit_hours,
+            professor: `${section.first_name} ${section.last_name}`,
+            professorSlug: section.faculty_slug,
+            professorTitle: section.faculty_title,
+            department: section.department_name,
+            departmentCode: section.department_code
+        }));
+        
+        if (sortBy === 'time') {
+            sections.sort((a, b) => extractStartHour(a.time) - extractStartHour(b.time));
+        } else if (sortBy === 'room') {
+            sections.sort((a, b) => a.room.localeCompare(b.room));
         }
-        departments[course.department].push(course);
-    });
-
-    return departments;
+        
+        return sections;
+        
+    } catch (error) {
+        console.error('Error getting sections by course ID:', error.message);
+        return [];
+    }
 };
 
-export { getAllCourses, getCourseById, getSortedSections, getCoursesByDepartment };
+/**
+ * Get all sections/offerings for a specific course by course slug
+ */
+const getSectionsByCourseSlug = async (courseSlug, sortBy = 'time') => {
+    try {
+        const query = `
+            SELECT cat.id, cat.time, cat.room, 
+                   c.course_code, c.name as course_name, c.description, c.credit_hours,
+                   f.first_name, f.last_name, f.slug as faculty_slug, f.title as faculty_title,
+                   d.name as department_name, d.code as department_code
+            FROM catalog cat
+            JOIN courses c ON cat.course_slug = c.slug
+            JOIN faculty f ON cat.faculty_slug = f.slug
+            JOIN departments d ON c.department_id = d.id
+            WHERE cat.course_slug = $1
+        `;
+        
+        const result = await db.query(query, [courseSlug]);
+        
+        let sections = result.rows.map(section => ({
+            id: section.id,
+            time: section.time,
+            room: section.room,
+            courseCode: section.course_code,
+            courseName: section.course_name,
+            description: section.description,
+            creditHours: section.credit_hours,
+            professor: `${section.first_name} ${section.last_name}`,
+            professorSlug: section.faculty_slug,
+            professorTitle: section.faculty_title,
+            department: section.department_name,
+            departmentCode: section.department_code
+        }));
+        
+        if (sortBy === 'time') {
+            sections.sort((a, b) => extractStartHour(a.time) - extractStartHour(b.time));
+        } else if (sortBy === 'room') {
+            sections.sort((a, b) => a.room.localeCompare(b.room));
+        }
+        
+        return sections;
+        
+    } catch (error) {
+        console.error('Error getting sections by course slug:', error.message);
+        return [];
+    }
+};
+
+/**
+ * Get all courses being taught by a specific faculty member by faculty ID
+ */
+const getCoursesByFacultyId = async (facultyId, sortBy = 'time') => {
+    try {
+        const query = `
+            SELECT cat.id, cat.time, cat.room, 
+                   c.course_code, c.name as course_name, c.description, c.credit_hours,
+                   f.first_name, f.last_name, f.slug as faculty_slug, f.title as faculty_title,
+                   d.name as department_name, d.code as department_code
+            FROM catalog cat
+            JOIN courses c ON cat.course_slug = c.slug
+            JOIN faculty f ON cat.faculty_slug = f.slug
+            JOIN departments d ON c.department_id = d.id
+            WHERE f.id = $1
+        `;
+        
+        const result = await db.query(query, [facultyId]);
+        
+        let sections = result.rows.map(section => ({
+            id: section.id,
+            time: section.time,
+            room: section.room,
+            courseCode: section.course_code,
+            courseName: section.course_name,
+            description: section.description,
+            creditHours: section.credit_hours,
+            professor: `${section.first_name} ${section.last_name}`,
+            professorSlug: section.faculty_slug,
+            professorTitle: section.faculty_title,
+            department: section.department_name,
+            departmentCode: section.department_code
+        }));
+        
+        if (sortBy === 'time') {
+            sections.sort((a, b) => extractStartHour(a.time) - extractStartHour(b.time));
+        } else if (sortBy === 'room') {
+            sections.sort((a, b) => a.room.localeCompare(b.room));
+        }
+        
+        return sections;
+        
+    } catch (error) {
+        console.error('Error getting courses by faculty ID:', error.message);
+        return [];
+    }
+};
+
+/**
+ * Get all courses being taught by a specific faculty member by faculty slug
+ */
+const getCoursesByFacultySlug = async (facultySlug, sortBy = 'time') => {
+    try {
+        const query = `
+            SELECT cat.id, cat.time, cat.room, 
+                   c.course_code, c.name as course_name, c.description, c.credit_hours,
+                   f.first_name, f.last_name, f.slug as faculty_slug, f.title as faculty_title,
+                   d.name as department_name, d.code as department_code
+            FROM catalog cat
+            JOIN courses c ON cat.course_slug = c.slug
+            JOIN faculty f ON cat.faculty_slug = f.slug
+            JOIN departments d ON c.department_id = d.id
+            WHERE cat.faculty_slug = $1
+        `;
+        
+        const result = await db.query(query, [facultySlug]);
+        
+        let sections = result.rows.map(section => ({
+            id: section.id,
+            time: section.time,
+            room: section.room,
+            courseCode: section.course_code,
+            courseName: section.course_name,
+            description: section.description,
+            creditHours: section.credit_hours,
+            professor: `${section.first_name} ${section.last_name}`,
+            professorSlug: section.faculty_slug,
+            professorTitle: section.faculty_title,
+            department: section.department_name,
+            departmentCode: section.department_code
+        }));
+        
+        if (sortBy === 'time') {
+            sections.sort((a, b) => extractStartHour(a.time) - extractStartHour(b.time));
+        } else if (sortBy === 'room') {
+            sections.sort((a, b) => a.room.localeCompare(b.room));
+        }
+        
+        return sections;
+        
+    } catch (error) {
+        console.error('Error getting courses by faculty slug:', error.message);
+        return [];
+    }
+};
+
+/**
+* Get sections from catalog table only - skips course join, just gets scheduling info
+*/
+const getSortedSections = async (courseSlug, sortBy = 'time') => {
+    try {
+        const query = `
+            SELECT cat.id, cat.time, cat.room, cat.course_slug, cat.faculty_slug,
+                   f.first_name, f.last_name
+            FROM catalog cat
+            JOIN faculty f ON cat.faculty_slug = f.slug
+            WHERE cat.course_slug = $1
+        `;
+        
+        const result = await db.query(query, [courseSlug]);
+        
+        let sections = result.rows.map(section => ({
+            id: section.id,
+            time: section.time,
+            room: section.room,
+            courseSlug: section.course_slug,
+            facultySlug: section.faculty_slug,
+            professor: `${section.first_name} ${section.last_name}`
+        }));
+        
+        if (sortBy === 'time') {
+            sections.sort((a, b) => extractStartHour(a.time) - extractStartHour(b.time));
+        } else if (sortBy === 'room') {
+            sections.sort((a, b) => a.room.localeCompare(b.room));
+        } else if (sortBy === 'professor') {
+            sections.sort((a, b) => a.professor.localeCompare(b.professor));
+        }
+        
+        return sections;
+        
+    } catch (error) {
+        console.error('Error getting sorted sections:', error.message);
+        return [];
+    }
+};
+
+export { getSectionsByCourseId, getSectionsByCourseSlug, getCoursesByFacultyId, getCoursesByFacultySlug, getSortedSections };
