@@ -25,16 +25,25 @@
     <header>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/catalog">Course Catalog</a></li>
-                <li><a href="/faculty">Faculty Directory</a></li>
-                <li><a href="/contact">Contact Us</a></li>
-                <li><a href="/contact/responses">Contact Responses</a></li>
-                <li><a href="/register">Register</a></li>
-                <li><a href="/users">All Users</a></li>
-                <li><a href="/demo">Middleware Demo</a></li>
-                <li><a href="/nonexistant">404</a></li>
+                <!-- Other links omitted for brevity -->
+                <% if (isLoggedIn) { %>
+                    <!-- Navigation for logged-in users -->
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/users">All Users</a></li>
+                    <li><a href="/contact/responses">Contact Responses</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                <% } else { %>
+                    <!-- Navigation for anonymous users -->
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/catalog">Course Catalog</a></li>
+                    <li><a href="/faculty">Faculty Directory</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/demo">Middleware Demo</a></li>
+                    <li><a href="/nonexistant">404</a></li>
+                <% } %>
             </ul>
         </nav>
         <div class="greeting-container">

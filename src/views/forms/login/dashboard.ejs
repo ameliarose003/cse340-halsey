@@ -1,0 +1,44 @@
+<%- include('../../partials/header') %>
+<main class="dashboard">
+    <h1>Welcome to Your Dashboard</h1>
+    <p>
+        This is a protected page that requires authentication. Only logged-in users can access this content.
+    </p>
+
+    <div class="user-info">
+        <h2>Your Account Information</h2>
+        <% if (user) { %>
+        <!-- TODO: Display user name, email, and account creation date -->
+        <div class="user-detail">
+            <p class="label">Username:</p>
+            <p class="value"><%= user.name %>!</p>
+                <!-- TODO: Use the user object passed from the controller -->
+            <p class="label">Email:</p>
+            <p class="value"><%= user.email %>!</p><br>
+            <!-- TODO: Format the creation date nicely -->
+            <p class="label">Account created on: </p>
+            <p class="value"><% const createdAt = new Date(user.created_at); %> <%= createdAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}) %> </p>
+        </div>
+    </div>
+
+    <div class="session-debug">
+        <h3>Session Information (For Learning Purposes)</h3>
+        <p><em>This section shows your current session data for educational purposes.</em></p>
+        <!-- TODO: Display session info in a pre element -->
+         <pre>
+            <% const jsonString = JSON.stringify(sessionData, null, 2) %>
+            <p><%= jsonString %></p>
+        <% } %>
+        </pre>
+        <!-- TODO: Use JSON.stringify(sessionData, null, 2) to format nicely -->
+        <!-- HINT: Pass req.session from controller to template -->
+        <p>
+            <strong>If you see a password property in the above object you have a security vulnerability, fix it!</strong>
+        </p>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="/logout" class="logout-button">Logout</a>
+    </div>
+</main>
+<%- include('../../partials/footer') %>
