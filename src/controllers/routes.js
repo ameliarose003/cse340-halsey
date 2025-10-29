@@ -39,12 +39,12 @@ router.get('/faculty/:facultyId', facultyDetailPage);
 // Contact form routes
 router.get('/contact', showContactForm);
 router.post('/contact', contactValidation, processContactForm);
-router.get('/contact/responses', showContactResponses);
+router.get('/contact/responses', requireLogin, showContactResponses);
 
 // User registration routes
 router.get('/register', showRegistrationForm);
 router.post('/register', registrationValidation, processRegistration);
-router.get('/users', showAllUsers);
+router.get('/users', requireLogin, showAllUsers);
 
 // Authentication routes
 router.get('/login', showLoginForm);

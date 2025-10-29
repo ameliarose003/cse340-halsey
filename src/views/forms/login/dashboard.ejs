@@ -1,7 +1,7 @@
 <%- include('../../partials/header') %>
 <main class="dashboard">
     <h1>Welcome to Your Dashboard</h1>
-    <p>
+    <p class="subtitle-text">
         This is a protected page that requires authentication. Only logged-in users can access this content.
     </p>
 
@@ -11,7 +11,7 @@
         <!-- TODO: Display user name, email, and account creation date -->
         <div class="user-detail">
             <p class="label">Username:</p>
-            <p class="value"><%= user.name %>!</p>
+            <p class="value"><%= user.name %></p>
                 <!-- TODO: Use the user object passed from the controller -->
             <p class="label">Email:</p>
             <p class="value"><%= user.email %>!</p><br>

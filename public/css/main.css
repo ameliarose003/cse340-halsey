@@ -18,9 +18,11 @@ header {
     justify-content: space-between;
 
     .greeting-container {
+        display: flex;
         justify-content: flex-end;
     }
     p {
+        margin-left: 3px;
         text-align: right;
     }
 
@@ -45,6 +47,9 @@ nav {
     }
 }
 
+.subtitle-text {
+    text-align: center;
+}
 
 
 main {
@@ -58,6 +63,36 @@ main {
         border-radius: 8px;
     }
 
+}
+
+.home-page-options {
+    display: grid;
+    margin: 0 auto;
+    max-width: 600px;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+    grid-gap: 30px;
+
+    li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        transition: box-shadow 0.2s ease;
+        border-radius: 12px;
+        padding: 1.5rem;
+        list-style: none;
+
+        &:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            text-decoration: none;
+            color: #444;
+        }
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 .introduction {

@@ -4,6 +4,9 @@
  * Sets res.locals.isLoggedIn = true for authenticated requests
  */
 const requireLogin = (req, res, next) => {
+    const user = req.session?.user;
+
+    res.locals.currentUser = user;
     // Check if user is logged in via session
     if (req.session && req.session.user) {
         // User is authenticated - set UI state and continue
@@ -14,5 +17,6 @@ const requireLogin = (req, res, next) => {
         res.redirect('/login');
     }
 };
+
 
 export { requireLogin };

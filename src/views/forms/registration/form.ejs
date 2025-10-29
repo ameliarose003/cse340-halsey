@@ -1,7 +1,7 @@
 <%- include('../../partials/header') %>
 <main>
     <h1><%= title %></h1>
-    <p class="heading-info">
+    <p class="subtitle-text">
         Register for a new account by providing your information below. All fields are required and passwords must meet security requirements.
     </p>
 
@@ -33,6 +33,7 @@
             <label for="confirmPassword">Confirm Password</label>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Please confirm Your Password" required minlength="8" pattern="(?=.*[0-9])(?=.*[!@#$%^&*]).*">
         </div>
+        <p>Your password must be a minimum of 8 characters and include a number (0-9) and one or more of these characters !@#$%^&*</p>
         <button type="submit">Submit Registration Form</button>
      </form>
 

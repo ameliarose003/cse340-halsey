@@ -1,7 +1,7 @@
 <%- include('../../partials/header') %>
 <main>
     <h1><%= title %></h1>
-    <p>
+    <p class="subtitle-text">
         Enter your email and password to access your account. Don't have an account? <a href="/register">Register here</a>.
     </p>
 
@@ -16,7 +16,6 @@
             <input type="password" id="password" name="password" placeholder="Enter your password" required minlength="8" pattern="(?=.*[0-9])(?=.*[!@#$%^&*]).*">
         </div> 
         <button type="submit">Sign In</button>
-
      </form>
     <!-- TODO: Add appropriate classes, follow same structure as registration form -->
     <!-- TODO: Include fields for email (email input) and password (password input) -->
