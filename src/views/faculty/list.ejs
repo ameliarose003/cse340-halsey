@@ -22,6 +22,7 @@ Include proper navigation back to main site -->
     <div class="faculty-list">
         <% facultyList.forEach(member => { %>
             <div class="faculty-card">
+                <a href="/faculty/<%= member.slug %>"><img class="faculty-photo" src="/images/faculty-images/<%= member.slug%>.jpg" alt="<%= member.name%>"></a>
                 <h3><a href="/faculty/<%= member.slug %>"><%= member.name %></a></h3>
                 <p class="faculty-title"><%= member.title %></p>
                 <p class="faculty-department"><%= member.department %></p>
