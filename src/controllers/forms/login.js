@@ -40,7 +40,7 @@ const processLogin = async (req, res) => {
     const errors = validationResult(req);
     // TODO: If errors exist, redirect back to login form
     if (!errors.isEmpty()) {
-        console.log('Validation errors: ', errors.array());
+        req.flash('error')
         return res.redirect('/login')
     }
     // TODO: Extract email and password from req.body
@@ -49,14 +49,14 @@ const processLogin = async (req, res) => {
     const user = await findUserByEmail(email.toLowerCase());
     // TODO: If user not found, log "User not found" and redirect back
     if (!user) {
-        console.log('User not found');
+        req.flash('error', 'Invalid email or password');
         return res.redirect('/login');
     }
     // TODO: Verify password using verifyPassword()
     const validPass = await verifyPassword(password, user.password);
     // TODO: If password incorrect, log "Invalid password" and redirect back
     if (!validPass) {
-        console.log('Invalid Password');
+        req.flash('error', 'Invalid email or password')
         return res.redirect('/login');
     }
     // SECURITY: Remove the password from the user object first!
@@ -65,6 +65,8 @@ const processLogin = async (req, res) => {
     // TODO: Store user information in session: req.session.user = user object (without password)
     req.session.user = user 
     // TODO: Redirect to protected dashboard (/dashboard)
+        
+    req.flash('success', 'Welcome to your dashboard');
     return res.redirect('/dashboard');
 };
 

@@ -7,6 +7,7 @@ import connectPgSimple from 'connect-pg-simple';
 // Import MVC components
 import routes from './src/controllers/routes.js';
 import { globalMiddleware } from './src/middleware/global.js';
+import flash from './src/middleware/flash.js';
 
 /**
  * Server configuration
@@ -41,6 +42,7 @@ app.use(session({
     }
 }));
 
+
 /**
  * Configure Express
  */
@@ -55,6 +57,8 @@ app.use(express.json());
 /**
  * Global Middleware
  */
+app.use(flash);
+
 app.use(globalMiddleware);
 
 /**

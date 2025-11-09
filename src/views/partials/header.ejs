@@ -10,18 +10,18 @@
         <script>
             const host = window.location.hostname;
             const currentPort = window.location.port;
-
+            
             const wsPort = currentPort ? (parseInt(currentPort) + 1) : 3001;
-
+            
             const ws = new WebSocket(`ws://${host}:${wsPort}`);
             ws.onclose = () => {
                 setTimeout(() => location.reload(), 2000);
             };
-        </script>
+            </script>
     <% } %>
+    <%- renderScripts() %>
 </head>
 <body class="<%= bodyClass %>">
-    <%- renderScripts() %>
     <header>
         <nav>
             <ul>
@@ -47,12 +47,19 @@
             </ul>
         </nav>
         <div class="greeting-container">
-            <% if (isLoggedIn) { %>
-
-                <p><%- greeting %></p>
-                <p><%= currentUser.name %>!</p>
-            <% } else { %>
+            
                 <p> <%- greeting %></p>
-            <% } %>
         </div>
     </header>
+    <main>
+        <% const messages = flash(); %>
+        <% Object.keys(messages).forEach(type => { %>
+            <% const msgs = messages[type]; %>
+            <% if (msgs && Array.isArray(msgs) && msgs.length > 0) { %>
+            <div class="alert <%= type %>">                
+                <% msgs.forEach(msg => { %>
+                    <p><%= msg %></p>
+                <% }); %>
+                </div>
+            <% } %>
+        <% }); %>
