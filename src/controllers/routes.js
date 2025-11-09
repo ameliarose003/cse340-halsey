@@ -8,17 +8,17 @@ import { addDemoHeaders } from '../middleware/demo/headers.js';
 import { catalogPage, courseDetailPage } from './catalog/catalog.js';
 import { facultyDetailPage, facultyListPage } from './faculty/faculty.js';
 import { homePage, aboutPage, demoPage, testErrorPage } from './index.js';
-import { showContactForm, processContactForm, showContactResponses, contactValidation } from './forms/contact.js';
+import { showContactForm, processContactForm, showContactResponses } from './forms/contact.js';
 import { showRegistrationForm, processRegistration, showAllUsers,showEditAccountForm,
-    processEditAccount, processDeleteAccount, registrationValidation, updateAccountValidation } from './forms/registration.js';
+    processEditAccount, processDeleteAccount } from './forms/registration.js';
 import { requireLogin, requireRole } from '../middleware/auth.js';
 import { 
     showLoginForm, 
     processLogin, 
     processLogout, 
     showDashboard, 
-    loginValidation 
 } from './forms/login.js';
+import {contactValidation, registrationValidation, loginValidation, updateAccountValidation } from '../middleware/validation/forms.js';
 
 // Home and basic pages
 router.get('/', homePage);
