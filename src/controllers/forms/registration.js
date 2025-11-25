@@ -163,7 +163,7 @@ const processEditAccount = async (req, res) => {
 
     if (!(isAdmin || isUser)) {
         req.flash('error', "You don't have permission to edit this account")
-        return res.redirect('users');
+        return res.redirect('/users');
     }
 
     // TODO: Check if the new email already exists for a DIFFERENT user
@@ -192,7 +192,7 @@ const processEditAccount = async (req, res) => {
     // const adminEditingAccount = currentUser.role_name === 'admin';
     if (isUser) {
         req.session.user = {
-            ...req.session.use,
+            ...req.session.user,
             name: updatedUser.name,
             email: updatedUser.email
         }
